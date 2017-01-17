@@ -165,17 +165,23 @@ end
 
 local Config = MenuElement({type = MENU, name = "Kalista", id = "Kalista", leftIcon = "http://static.lolskill.net/img/champions/64/kalista.png"})
 
-Config:MenuElement({type = MENU, name = "Combo Settings", id = "Combo"})
-Config.Combo:MenuElement({type = MENU, name = "Rend(E)", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
+Config:MenuElement({type = MENU, name = "Killsteal Settings", id = "Combo"})
+Config.Combo:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
 Config.Combo.E:MenuElement({name = "Enabled", id = "Enabled", value = true})
+Config.Combo:MenuElement({type = MENU, name = "Rend(E) Combo Only", id = "E2", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
+Config.Combo.E2:MenuElement({name = "Enabled", id = "Enabled", value = true})
+
 
 Config:MenuElement({type = MENU, name = "LaneClear Settings", id = "Clear"})
-Config.Clear:MenuElement({type = MENU, name = "Rend(E)", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
+Config.Clear:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
 Config.Clear.E:MenuElement({name = "Enabled", id = "Enabled", value = true})
+
+Config:MenuElement({type = MENU, name = "JungleClear Settings", id = "JungleClear"})
+Config.JungleClear:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
+Config.JungleClear.E:MenuElement({name = "Enabled", id = "Enabled", value = true})
 
 Config:MenuElement({type = MENU, name = "Key Settings", id = "Key"})
 Config.Key:MenuElement({id = "Combo", name = "Combo", key = 32})
-Config.Key:MenuElement({id = "LaneClear", name = "LaneClear", key = string.byte("V")})
 
 function OnTick()
         if not myHero.dead then
@@ -183,7 +189,8 @@ function OnTick()
                 if target then
                   Combo(target)
                 end
-                LastHit()
+                LaneClear()
+                JungleClear()
         end
 end
 function GetTarget(range)
@@ -202,7 +209,6 @@ function GetTarget(range)
 end
 
 function Combo()
-  if Config.Key.Combo:Value() then
     for _, Enemy in pairs(GetEnemyHeroes()) do
       if Config.Combo.E.Enabled:Value() then
         if getdmg("E", Enemy, myHero) > Enemy.health then
@@ -211,12 +217,25 @@ function Combo()
           end
         end  
       end
+    end 
+end
+
+function Combo()
+  if Config.Key.Combo:Value() then
+    for _, Enemy in pairs(GetEnemyHeroes()) do
+      if Config.Combo.E2.Enabled:Value() then
+        if getdmg("E", Enemy, myHero) > Enemy.health then
+          if CanUseSpell(myHero, _E) and IsValidTarget(Enemy, GetRange(_E), false, myHero.pos) then
+            Control.CastSpell(HK_E)
+          end
+        end  
+      end
     end
   end  
-end       
+end            
 
-function LastHit()
-  if Config.Clear.E.Enabled:Value() and Config.Key.LaneClear:Value() then
+function LaneClear()
+  if Config.Clear.E.Enabled:Value() then
     for _, Minion in pairs(GetMinions(200)) do
       if getdmg("E", Minion, myHero) > Minion.health then
         if CanUseSpell(myHero, _E) and IsValidTarget(Minion, GetRange(_E), false, myHero.pos) then
@@ -226,3 +245,15 @@ function LastHit()
     end
   end
 end
+
+function JungleClear()
+  if Config.JungleClear.E.Enabled then
+    for _, Minion in pairs(GetMinions(300)) do
+      if getdmg("E", Minion, myHero) > Minion.health then
+        if CanUseSpell(myHero, _E) and IsValidTarget(Minion, GetRange(_E), false, myHero.pos) then
+          Control.CastSpell(HK_E)
+        end
+      end
+    end
+  end
+end          
