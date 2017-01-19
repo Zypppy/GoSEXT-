@@ -165,16 +165,16 @@ end
 
 local Config = MenuElement({type = MENU, name = "Kalista", id = "Kalista", leftIcon = "http://static.lolskill.net/img/champions/64/kalista.png"})
 
-Config:MenuElement({type = MENU, name = "Killsteal Settings", id = "Combo"})
-Config.Combo:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
-Config.Combo.E:MenuElement({name = "Enabled", id = "Enabled", value = true})
-Config.Combo:MenuElement({type = MENU, name = "Rend(E) Combo Only", id = "E2", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
-Config.Combo.E2:MenuElement({name = "Enabled", id = "Enabled", value = true})
+Config:MenuElement({type = MENU, name = "Steal Settings", id = "Steal"})
+Config.Steal:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "ESteal", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
+Config.Steal.ESteal:MenuElement({name = "Enabled", id = "Enabled", value = true})
 
 
 Config:MenuElement({type = MENU, name = "LaneClear Settings", id = "Clear"})
-Config.Clear:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
+Config.Clear:MenuElement({type = MENU, name = "Rend(E) Toggle Last Hit", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
 Config.Clear.E:MenuElement({name = "Enabled", id = "Enabled", value = true})
+
+
 
 Config:MenuElement({type = MENU, name = "JungleClear Settings", id = "JungleClear"})
 Config.JungleClear:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
@@ -187,7 +187,7 @@ function OnTick()
         if not myHero.dead then
                 local target = GetTarget(3000)
                 if target then
-                  Combo(target)
+                  Steal(target)
                 end
                 LaneClear()
                 JungleClear()
@@ -208,31 +208,17 @@ function GetTarget(range)
     return target
 end
 
-function Combo()
-    for _, Enemy in pairs(GetEnemyHeroes()) do
-      if Config.Combo.E.Enabled:Value() then
-        if getdmg("E", Enemy, myHero) > Enemy.health then
-          if CanUseSpell(myHero, _E) and IsValidTarget(Enemy, GetRange(_E), false, myHero.pos) then
-            Control.CastSpell(HK_E)
-          end
-        end  
-      end
-    end 
-end
-
-function Combo()
-  if Config.Key.Combo:Value() then
-    for _, Enemy in pairs(GetEnemyHeroes()) do
-      if Config.Combo.E2.Enabled:Value() then
-        if getdmg("E", Enemy, myHero) > Enemy.health then
-          if CanUseSpell(myHero, _E) and IsValidTarget(Enemy, GetRange(_E), false, myHero.pos) then
-            Control.CastSpell(HK_E)
-          end
-        end  
-      end
+function Steal()
+  for _, Enemy in pairs(GetEnemyHeroes()) do
+    if Config.Steal.ESteal.Enabled:Value() then
+      if getdmg("E", Enemy, myHero) > Enemy.health then
+        if CanUseSpell(myHero, _E) and IsValidTarget(Enemy, GetRange(_E), false, myHero.pos) then
+          Control.CastSpell(HK_E)
+        end
+      end    
     end
-  end  
-end            
+  end 
+end           
 
 function LaneClear()
   if Config.Clear.E.Enabled:Value() then
@@ -242,7 +228,7 @@ function LaneClear()
           Control.CastSpell(HK_E)
         end
       end
-    end
+    end 
   end
 end
 
