@@ -180,8 +180,8 @@ Config:MenuElement({type = MENU, name = "JungleClear Settings", id = "JungleClea
 Config.JungleClear:MenuElement({type = MENU, name = "Rend(E) Toggle", id = "E", leftIcon= "http://static.lolskill.net/img/abilities/64/Kalista_E.png"})
 Config.JungleClear.E:MenuElement({name = "Enabled", id = "Enabled", value = true})
 
-Config:MenuElement({type = MENU, name = "Key Settings", id = "Key"})
-Config.Key:MenuElement({id = "Combo", name = "Combo", key = 32})
+--Config:MenuElement({type = MENU, name = "Key Settings", id = "Key"})
+--Config.Key:MenuElement({id = "Combo", name = "Combo", key = 32})
 
 function OnTick()
         if not myHero.dead then
