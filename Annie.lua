@@ -100,7 +100,7 @@ local drawc0lorLasthit = Draw.Color(0xFF0000FF);
             end
           end
         end
-        if hero.distance <= qSpellData.range then
+        if hero.distance <= rSpellData.range then
           local spellDmg = getdmg("R", hero, myHero);
           if spellDmg > hero.health then
           
