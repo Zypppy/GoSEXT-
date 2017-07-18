@@ -1,1 +1,1 @@
-# GoSEXT-Harambe
+# GoS- External RIP
